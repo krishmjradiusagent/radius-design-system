@@ -21,6 +21,7 @@
 - **Surface Background**: `#F8FAFC` (Slate-50)
 
 ## 🛠️ COMPONENT USAGE
+- **Compositions (PRIORITY 1)**: Always check `src/compositions/` first. If a screen exists (e.g. `ManageCollaboratorsCanvas`), use it as a 1:1 blueprint.
 - **Modals**: Wrap everything in `<ModalTemplate />`. Use the `headerActions` slot for top-right buttons (like 'Revoke All').
 - **Lists**: Use `<CollaboratorCard />` for all personnel-related lists.
 - **Text**: Use the `<Typo />` components to ensure correct weight and tracking inheritence.
