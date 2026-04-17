@@ -1,0 +1,34 @@
+{
+  "audit_checklist": {
+    "tokens": {
+      "colors": "Are all colors using @brand or @text semantic tokens? No hex codes allowed.",
+      "spacing": "Is the layout using 4px/8px increments? Check for hardcoded margins/paddings.",
+      "radius": "Modal: 32px | Card: 24px | Button: 16px. Are these consistent?"
+    },
+    "scoping": {
+      "modal_shell": "Does the popup inherit from ModalTemplate? Is the close button standard?",
+      "cta_placement": "Primary: Right (Action Black) | Secondary: Left (Ghost). Is this followed?",
+      "section_count": "Are there more than 3 body sections? If so, consider a Sheet or Page."
+    },
+    "typography": {
+      "headings": "Is the title weight 900 (Black) with tight tracking?",
+      "labels": "Are sub-labels uppercase with widest (0.1em) tracking?",
+      "hierachy": "Is there a clear visual distinction between Primary, Secondary, and Caption text?"
+    },
+    "accessibility": {
+      "touch_targets": "Are all buttons/links >= 44px on mobile?",
+      "aria_labels": "Do all icons and interactive elements have descriptive aria-labels?",
+      "keyboard_nav": "Is the focus trap active in the modal? Can it be dismissed with Escape?"
+    },
+    "mobile_first": {
+      "rendering": "Does the UI switch to a bottom-sheet below 640px?",
+      "cta_stacking": "Are buttons stacked full-width on mobile?",
+      "input_handling": "Does the footer stay sticky when the virtual keyboard is open?"
+    },
+    "polish": {
+      "interactions": "Do buttons have a tactile scale-down (0.98) on press?",
+      "shadow_depth": "Are shadows soft and deep (shadow-2xl style) or sharp/thin?",
+      "loading_states": "Do items have Skeleton loaders if data is async?"
+    }
+  }
+}
