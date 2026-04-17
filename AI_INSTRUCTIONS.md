@@ -8,7 +8,10 @@
 3. **Typography Heritage**: 
    - Headers: `font-black` (900 weight) + `tracking-tight`.
    - Labels/Captions: `uppercase` + `tracking-widest` + `text-[10px]`.
-4. **Button DNA**:
+4. **Dependency Lockdown**:
+   - Icons: ALWAYS use `lucide-react`. Ensure `Search, X, Check, ArrowRight, Info` are explicitly imported.
+   - Layout: Use `Framer Motion` for all transitions.
+5. **Button DNA**:
    - Primary: Background `#171717`, Text `#FFFFFF`, `rounded-2xl`.
    - Secondary: Transparent/Outline, Border `slate-200`.
 
