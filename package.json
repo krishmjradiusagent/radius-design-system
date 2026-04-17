@@ -1,0 +1,17 @@
+{
+  "name": "@radius/design-system",
+  "version": "1.0.0",
+  "description": "standalone high-fidelity design system library",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.0.0",
+    "lucide-react": "^0.263.1",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^1.14.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.0.0"
+  }
+}
