@@ -1,0 +1,122 @@
+{
+  "design_tokens": {
+    "colors": {
+      "brand": {
+        "primary": "indigo-600",
+        "action": "neutral-900",
+        "surface": "slate-50",
+        "danger": "red-600",
+        "success": "emerald-500"
+      },
+      "text": {
+        "primary": "neutral-900",
+        "secondary": "neutral-500",
+        "inverted": "white"
+      }
+    },
+    "spacing": {
+      "base": "4px",
+      "xxs": "4px",
+      "xs": "8px",
+      "sm": "12px",
+      "md": "16px",
+      "lg": "24px",
+      "xl": "32px",
+      "xxl": "48px"
+    },
+    "radius": {
+      "modal": "32px",
+      "card": "24px",
+      "button": "16px",
+      "badge": "full"
+    },
+    "typography": {
+      "family": "Inter, sans-serif",
+      "weights": {
+        "regular": "400",
+        "medium": "500",
+        "bold": "700",
+        "black": "900"
+      },
+      "tracking": {
+        "tight": "-0.02em",
+        "normal": "0",
+        "widest": "0.1em"
+      }
+    },
+    "shadows": {
+      "modal": "0 20px 50px rgba(0,0,0,0.2)",
+      "card": "0 1px 3px rgba(0,0,0,0.05)",
+      "button": "0 4px 12px rgba(0,0,0,0.1)"
+    }
+  },
+  "component_specs": {
+    "primitives": {
+      "Button": {
+        "base": "shadcn/button",
+        "variants": ["primary", "secondary", "ghost", "outline", "destructive"],
+        "radius": "radius.button"
+      },
+      "Badge": {
+        "base": "shadcn/badge",
+        "style": "uppercase tracking-widest text-[10px] font-black"
+      },
+      "Input": {
+        "base": "shadcn/input",
+        "rounding": "radius.card"
+      }
+    },
+    "composites": {
+      "CollaboratorCard": {
+        "anatomy": ["avatar", "title", "role_badge", "status_indicator", "access_box"],
+        "rounding": "radius.card",
+        "states": ["hover", "tap"]
+      }
+    }
+  },
+  "modal_system": {
+    "shell": {
+      "padding": "spacing.xl",
+      "rounding": "radius.modal",
+      "shadow": "shadows.modal"
+    },
+    "families": [
+      "confirmation",
+      "invitation",
+      "assignment",
+      "edit",
+      "selection",
+      "review"
+    ],
+    "cta_logic": {
+      "max_count": 2,
+      "order": "primary_right",
+      "destructive": "always_warning"
+    }
+  },
+  "modal_sections": {
+    "entity_preview": { "structure": "avatar + main_text + sub_text" },
+    "selection_list": { "structure": "search_row + card_stack" },
+    "permissions": { "structure": "label + dropdown/switcher" },
+    "impact_list": { "structure": "info_icon + bullet_points" }
+  },
+  "patterns": {
+    "assign": { "interaction": "multi-select + confirm" },
+    "revoke": { "interaction": "danger_button + confirmation_modal" },
+    "invite": { "interaction": "email_input + role_selection" }
+  },
+  "examples": {
+    "invite_collaborator": {
+      "family": "invitation",
+      "sections": ["form", "info"],
+      "primary_cta": "Send Invitation"
+    },
+    "revoke_access": {
+      "family": "confirmation",
+      "sections": ["warning"],
+      "primary_cta": "Revoke Access",
+      "is_destructive": true
+    }
+  },
+  "llm_rules": "STRICT ADHERENCE REQUIRED: 1. Use semantic tokens ONLY. 2. Map every component to a shadcn base. 3. NEVER use hardcoded pixels/hex codes. 4. Accessibility WCAG AA mandatory. 5. If pattern exists, reuse it. Do not invent custom layouts."
+}
