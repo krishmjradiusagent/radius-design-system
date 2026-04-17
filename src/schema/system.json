@@ -113,6 +113,26 @@
       "primary": { "position": "right", "style": "action_black", "rounding": "radius.button" },
       "secondary": { "position": "left", "style": "ghost", "icon": "info" },
       "header_action": { "position": "top_right", "style": "outline_danger" }
+    },
+    "mobile_system": {
+      "variant": "bottom_sheet",
+      "trigger_breakpoint": "640px",
+      "geometry": {
+        "rounding": "32px 32px 0 0",
+        "drag_handle": true,
+        "max_height": "90vh"
+      },
+      "adjustments": {
+        "padding_outer": "spacing.md",
+        "spacing_between_sections": "spacing.md",
+        "cta_layout": "stacked_reversed",
+        "cta_width": "full"
+      },
+      "keyboard_handling": {
+        "avoid_keyboard": true,
+        "scroll_into_view": true,
+        "sticky_footer": true
+      }
     }
   },
   "modal_sections": {
