@@ -76,22 +76,43 @@
   },
   "modal_system": {
     "shell": {
-      "padding": "spacing.xl",
-      "rounding": "radius.modal",
-      "shadow": "shadows.modal"
+      "dimensions": {
+        "max_width": "560px",
+        "min_width": "320px",
+        "padding_outer": "spacing.xl",
+        "padding_inner_sections": "spacing.lg"
+      },
+      "geometry": {
+        "rounding": "radius.modal",
+        "border": "1px solid slate-50",
+        "shadow": "shadows.modal"
+      },
+      "header": {
+        "height": "auto",
+        "title_weight": "typography.weights.black",
+        "title_size": "24px",
+        "badge_offset_x": "spacing.xs"
+      },
+      "footer": {
+        "border_top": "1px solid slate-50",
+        "padding_t": "spacing.md",
+        "cta_alignment": "justify-between",
+        "cta_gap": "spacing.md"
+      }
     },
-    "families": [
-      "confirmation",
-      "invitation",
-      "assignment",
-      "edit",
-      "selection",
-      "review"
-    ],
-    "cta_logic": {
-      "max_count": 2,
-      "order": "primary_right",
-      "destructive": "always_warning"
+    "constraints": {
+      "max_sections": 3,
+      "forbidden_elements": ["raw_divs", "custom_paddings", "inline_styles"],
+      "scroll_behavior": "body_only_internal",
+      "destructive_rules": {
+        "primary_button": "color.brand.danger",
+        "requires_checkbox": true
+      }
+    },
+    "cta_hierarchy": {
+      "primary": { "position": "right", "style": "action_black", "rounding": "radius.button" },
+      "secondary": { "position": "left", "style": "ghost", "icon": "info" },
+      "header_action": { "position": "top_right", "style": "outline_danger" }
     }
   },
   "modal_sections": {
