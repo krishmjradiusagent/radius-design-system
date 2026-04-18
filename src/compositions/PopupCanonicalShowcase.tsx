@@ -1,6 +1,7 @@
 import React from 'react';
 import { ManageCollaboratorsCanvas } from './ManageCollaboratorsCanvas';
 import { DestructiveConfirmationCanvas } from './DestructiveConfirmationCanvas';
+import { RemoveCollaboratorPopup } from './RemoveCollaboratorPopup';
 
 /**
  * 🏛️ Radius Blueprint: Popup Canonical Showcase
@@ -19,9 +20,16 @@ export const PopupCanonicalShowcase: React.FC = () => {
       </div>
 
       <div className="flex flex-col items-center gap-8 w-full">
-        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Canonical: Destructive Confirmation (1:1 Parity)</label>
+        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Canonical: Destructive Confirmation (Generic Pattern)</label>
         <div className="scale-90 origin-top">
           <DestructiveConfirmationCanvas />
+        </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-8 w-full">
+        <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Canonical: Remove Member (Specific Implementation)</label>
+        <div className="scale-90 origin-top">
+          <RemoveCollaboratorPopup collaboratorName="Sarah Chen" clientName="Global SaaS" />
         </div>
       </div>
 

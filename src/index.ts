@@ -19,6 +19,7 @@ export * from './templates/ModalTemplate';
 // Compositions (Canonical blueprints)
 export * from './compositions/ManageCollaboratorsCanvas';
 export * from './compositions/DestructiveConfirmationCanvas';
+export * from './compositions/RemoveCollaboratorPopup';
 export * from './compositions/ActionChipShowcase';
 export * from './compositions/PopupSystemShowcase';
 export * from './compositions/PopupCanonicalShowcase';
