@@ -4,9 +4,12 @@ import { cn } from '../utils/cn';
 import { ActionChip } from './ActionChip';
 import { InfoInlineNotice } from './InfoInlineNotice';
 
-export type PopupWidth = 'sm' | 'md' | 'lg' | 'xl';
+export type PopupWidth = 'sm' | 'md' | 'lg' | 'xl' | 'editorial';
 export type PopupHeaderAlign = 'start' | 'center';
 export type CloseIconVariant = 'x' | 'plus' | 'minus' | 'chevron' | 'custom';
+export type CloseButtonStyle = 'ghost' | 'subtle-circle' | 'none';
+export type RegionSurface = 'transparent' | 'subtle' | 'elevated';
+export type RegionPadding = 'compact' | 'default' | 'spacious';
 
 interface PopupRootProps {
   // 📐 Layout & Dimensions
@@ -19,8 +22,13 @@ interface PopupRootProps {
   subtitle?: string;
   subtitleMaxWidth?: string;
   subtitleClamp?: 1 | 2 | 3 | 'none';
+  subtitleTone?: 'neutral' | 'dark' | 'indigo';
+  subtitleAlign?: 'start' | 'center';
+  
+  // 🔘 Close Button System
   showClose?: boolean;
   closeIcon?: CloseIconVariant;
+  closeButtonStyle?: CloseButtonStyle;
   customCloseIcon?: React.ReactNode;
   onClose?: () => void;
   
@@ -31,14 +39,27 @@ interface PopupRootProps {
   // 📦 Body Slot
   children: React.ReactNode;
   
-  // ⚓ Footer Slot
+  // ⚓ Footer Row
   footerAction?: React.ReactNode; // Slot for CTAGroup
   footerAccessory?: React.ReactNode; // Slot for secondary info/links
   footerNote?: string;
   footerNoteMaxWidth?: string;
   footerNoteClamp?: 1 | 2 | 3 | 'none';
+  footerNoteTone?: 'neutral' | 'destructive' | 'info' | 'warning' | 'success';
+  footerNoteSingleLineWhenPossible?: boolean;
   
-  // 🎭 Visual Styles
+  // 🎨 Surface & Region Control
+  headerSurface?: RegionSurface;
+  bodySurface?: RegionSurface;
+  footerSurface?: RegionSurface;
+  showFooterTray?: boolean;
+  showHeaderDivider?: boolean;
+  showBodyDivider?: boolean;
+  showFooterDivider?: boolean;
+  footerTrayInset?: 'none' | 'soft' | 'card-aligned';
+  regionPaddingPreset?: RegionPadding;
+  
+  // 🎭 Misc
   backdrop?: 'light' | 'dim' | 'strong';
   className?: string;
 }
@@ -48,6 +69,7 @@ const WIDTH_MAP: Record<PopupWidth, string> = {
   md: 'max-w-[480px]',
   lg: 'max-w-[560px]',
   xl: 'max-w-[640px]',
+  editorial: 'max-w-[800px]',
 };
 
 const CLOSE_ICONS: Record<CloseIconVariant, LucideIcon | null> = {
@@ -58,100 +80,164 @@ const CLOSE_ICONS: Record<CloseIconVariant, LucideIcon | null> = {
   custom: null,
 };
 
+const SURFACE_MAP: Record<RegionSurface, string> = {
+  transparent: 'bg-transparent',
+  subtle: 'bg-slate-50/50',
+  elevated: 'bg-white shadow-sm ring-1 ring-black/5',
+};
+
+const PADDING_MAP: Record<RegionPadding, string> = {
+  compact: 'p-6',
+  default: 'p-8',
+  spacious: 'p-10',
+};
+
 /**
  * 🏛️ Radius Core: PopupRoot
  * 
- * The master orchestrator for the Radius Popup System.
- * Bevaves like a Figma component instance with fixed structural DNA.
+ * The single source of truth for the Radius Popup System.
+ * Handles shell DNA, surface layers, and region partitioning.
  */
 export const PopupRoot: React.FC<PopupRootProps> = ({
   widthPreset = 'lg',
   headerAlign = 'start',
+  maxWidthOverride,
+  
   title,
   subtitle,
-  subtitleMaxWidth = '400px',
+  subtitleMaxWidth = '480px',
   subtitleClamp = 'none',
+  subtitleTone = 'neutral',
+  subtitleAlign,
+  
   showClose = true,
   closeIcon = 'x',
+  closeButtonStyle = 'ghost',
   customCloseIcon,
   onClose,
+  
   headerChip,
   headerAccessory,
+  
   children,
+  
   footerAction,
   footerAccessory,
   footerNote,
-  footerNoteMaxWidth = '320px',
+  footerNoteMaxWidth = '360px',
   footerNoteClamp = 1,
+  footerNoteTone = 'neutral',
+  footerNoteSingleLineWhenPossible = true,
+  
+  headerSurface = 'transparent',
+  bodySurface = 'transparent',
+  footerSurface = 'transparent',
+  showFooterTray = false,
+  showHeaderDivider = false,
+  showBodyDivider = false,
+  showFooterDivider = true,
+  footerTrayInset = 'none',
+  regionPaddingPreset = 'default',
+  
   className,
 }) => {
   const CloseIconComponent = CLOSE_ICONS[closeIcon];
+  const paddingClass = PADDING_MAP[regionPaddingPreset];
+  const finalSubtitleAlign = subtitleAlign || headerAlign;
 
   return (
-    <div className={cn(
-      "w-full bg-white rounded-[32px] shadow-[0px_20px_50px_rgba(0,0,0,0.2)] overflow-hidden border border-slate-50",
-      WIDTH_MAP[widthPreset],
-      className
-    )}>
-      <div className="p-8 flex flex-col">
-        
-        {/* 1. Header Row */}
-        <header className={cn(
-          "flex flex-col gap-2 mb-8",
-          headerAlign === 'center' ? 'items-center text-center' : 'items-start'
-        )}>
-          <div className="flex justify-between items-start w-full">
-            <div className={cn(
-              "flex flex-col gap-2",
-              headerAlign === 'center' && "items-center"
-            )}>
-              {headerChip && <div className="mb-0.5">{headerChip}</div>}
-              <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
-                  {title}
-                </h2>
-                {headerAccessory && <div>{headerAccessory}</div>}
-              </div>
+    <div 
+      className={cn(
+        "w-full bg-white rounded-[32px] shadow-[0px_20px_50px_rgba(0,0,0,0.18)] overflow-hidden border border-slate-50 flex flex-col transition-all",
+        WIDTH_MAP[widthPreset],
+        className
+      )}
+      style={maxWidthOverride ? { maxWidth: maxWidthOverride } : undefined}
+    >
+      {/* 1. Header Region */}
+      <header className={cn(
+        "relative flex flex-col transition-all",
+        SURFACE_MAP[headerSurface],
+        paddingClass,
+        showHeaderDivider && "border-b border-slate-50"
+      )}>
+        <div className="flex justify-between items-start w-full gap-4">
+          <div className={cn(
+            "flex flex-col gap-2.5",
+            headerAlign === 'center' && "items-center text-center w-full ml-8" // Offset close button if centered
+          )}>
+            {headerChip && <div className="mb-0.5">{headerChip}</div>}
+            <div className={cn("flex items-center gap-3", headerAlign === 'center' && "justify-center")}>
+              <h2 className="text-[24px] font-black text-slate-900 tracking-tight leading-[1.1]">
+                {title}
+              </h2>
+              {headerAccessory && <div className="shrink-0">{headerAccessory}</div>}
             </div>
-
-            {showClose && (
-              <button 
-                onClick={onClose}
-                className="p-2 -mr-2 text-slate-400 hover:text-slate-600 transition-colors hover:bg-slate-50 rounded-full"
-              >
-                {closeIcon === 'custom' ? customCloseIcon : CloseIconComponent && <CloseIconComponent size={20} />}
-              </button>
-            )}
           </div>
 
-          {subtitle && (
-            <p 
+          {showClose && closeButtonStyle !== 'none' && (
+            <button 
+              onClick={onClose}
               className={cn(
-                "text-[14px] text-slate-500 font-medium leading-relaxed",
-                subtitleClamp !== 'none' && `line-clamp-${subtitleClamp}`
+                "shrink-0 transition-all flex items-center justify-center",
+                closeButtonStyle === 'ghost' && "p-2 -mr-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full",
+                closeButtonStyle === 'subtle-circle' && "size-10 rounded-full bg-slate-50 text-slate-500 hover:bg-slate-100 border border-slate-100"
               )}
-              style={{ maxWidth: subtitleMaxWidth }}
             >
-              {subtitle}
-            </p>
+              {closeIcon === 'custom' ? customCloseIcon : CloseIconComponent && <CloseIconComponent size={20} />}
+            </button>
           )}
-        </header>
+        </div>
 
-        {/* 2. Body Slot (Auto-Layout Container) */}
-        <main className="flex-1 flex flex-col">
-          {children}
-        </main>
+        {subtitle && (
+          <p 
+            className={cn(
+              "text-[14px] font-medium leading-[1.6] mt-3 tracking-normal",
+              subtitleTone === 'neutral' && "text-slate-500",
+              subtitleTone === 'dark' && "text-slate-700",
+              subtitleTone === 'indigo' && "text-[#5A5FF2]",
+              subtitleClamp !== 'none' && `line-clamp-${subtitleClamp}`,
+              finalSubtitleAlign === 'center' && "mx-auto text-center"
+            )}
+            style={{ maxWidth: subtitleMaxWidth }}
+          >
+            {subtitle}
+          </p>
+        )}
+      </header>
 
-        {/* 3. Footer Row */}
-        {(footerAction || footerAccessory || footerNote) && (
-          <footer className="mt-10 pt-6 border-t border-slate-50 flex items-center justify-between gap-6">
-            <div className="flex flex-col gap-2">
+      {/* 2. Body Region */}
+      <main className={cn(
+        "flex-1 flex flex-col transition-all",
+        SURFACE_MAP[bodySurface],
+        paddingClass,
+        "pt-0", // Usually body starts right after header spacing
+        showBodyDivider && "border-t border-slate-50"
+      )}>
+        {children}
+      </main>
+
+      {/* 3. Footer / Footer Tray Region */}
+      {(footerAction || footerAccessory || footerNote) && (
+        <footer className={cn(
+          "transition-all",
+          showFooterTray ? "bg-slate-50/80 mt-2" : "mt-4",
+          SURFACE_MAP[footerSurface],
+          paddingClass,
+          showFooterDivider && !showFooterTray && "border-t border-slate-50",
+          footerTrayInset === 'soft' && "p-4 mx-4 mb-4 rounded-[24px] border border-slate-100 shadow-sm",
+          footerTrayInset === 'card-aligned' && "p-6 mx-8 mb-8 rounded-[24px] border border-slate-100 shadow-sm"
+        )}>
+          <div className="flex items-center justify-between gap-8">
+            <div className="flex flex-col gap-2 min-w-0">
               {footerNote && (
                 <InfoInlineNotice
                   text={footerNote}
                   maxWidth={footerNoteMaxWidth}
-                  clamp={footerNoteClamp === 'none' ? undefined : footerNoteClamp}
-                  icon={Info}
+                  clamp={footerNoteClamp === 'none' ? undefined : footerNoteClamp as number}
+                  singleLineWhenPossible={footerNoteSingleLineWhenPossible}
+                  tone={footerNoteTone}
+                  icon={<Info size={14} />}
                 />
               )}
               {footerAccessory}
@@ -162,9 +248,9 @@ export const PopupRoot: React.FC<PopupRootProps> = ({
                 {footerAction}
               </div>
             )}
-          </footer>
-        )}
-      </div>
+          </div>
+        </footer>
+      )}
     </div>
   );
 };

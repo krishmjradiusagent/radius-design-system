@@ -1,7 +1,7 @@
 {
   "system": "Radius Design System",
-  "version": "1.1.0",
-  "philosophy": "Figma-Instance Governance: Enforce visual parity via strict prop-driven primitives. Prevent layout drift by locking shell DNA and controlling flexibility through registered slots and booleans.",
+  "version": "1.2.0",
+  "philosophy": "Figma-Instance Governance: Enforce visual parity via strict prop-driven primitives. PopupRoot is the sole source of truth for shell DNA, region surfaces, and footer tray behavior.",
   "heritage": {
     "shell_rounding": "32px",
     "button_rounding": "16px",
@@ -10,69 +10,52 @@
     "optical_alignment": "center-baseline",
     "typography": {
       "labels": "font-black uppercase tracking-widest",
-      "body": "font-medium text-slate-500",
-      "titles": "font-bold tracking-tight text-slate-900"
+      "titles": "font-black tracking-tight text-slate-900 text-[24px]",
+      "subtitles": "font-medium text-slate-500 text-[14px] leading-[1.6]"
     }
   },
   "registered_primitives": {
     "PopupRoot": {
       "path": "src/components/PopupRoot.tsx",
-      "slots": ["headerChip", "headerAccessory", "footerAction", "footerAccessory", "children"],
+      "regions": ["Header", "Body", "FooterTray"],
       "props": {
-        "widthPreset": "sm | md | lg | xl",
-        "headerAlign": "start | center",
-        "showClose": "boolean",
-        "backdrop": "light | dim | strong",
-        "title": "string",
-        "subtitle": "string",
+        "widthPreset": "sm | md | lg | xl | editorial",
+        "headerSurface": "transparent | subtle | elevated",
+        "footerSurface": "transparent | subtle | elevated",
+        "showFooterTray": "boolean",
+        "footerTrayInset": "none | soft | card-aligned",
+        "showHeaderDivider": "boolean",
+        "showBodyDivider": "boolean",
+        "showFooterDivider": "boolean",
+        "regionPaddingPreset": "compact | default | spacious",
+        "closeButtonStyle": "ghost | subtle-circle | none",
+        "subtitleTone": "neutral | dark | indigo",
         "subtitleClamp": "number | none",
-        "footerNote": "string",
-        "footerNoteClamp": "number | none"
+        "footerNoteTone": "neutral | destructive | info | success",
+        "footerNoteSingleLineWhenPossible": "boolean"
       }
     },
     "PopupLayout": {
       "path": "src/components/PopupLayout.tsx",
-      "variants": ["PopupBody", "PopupSection"],
-      "body_props": {
-        "layout": "list | form | confirmation | banner-list",
-        "gap": "number (px)",
-        "align": "start | center"
-      },
-      "section_props": {
-        "title": "string",
-        "body": "ReactNode",
-        "accessory": "ReactNode"
-      }
-    },
-    "ActionChip": {
-      "path": "src/components/ActionChip.tsx",
-      "variants": ["icon-only", "text-only", "icon-text", "text-icon", "icon-text-icon"],
-      "tones": ["neutral", "info", "warning", "success", "destructive"],
-      "appearances": ["outline", "subtle", "filled"],
-      "destructive_intent": {
-        "loud": "Strong red semantic signaling (e.g. Purge, Delete All)",
-        "quiet": "Neutral gray tone for safety-critical but non-primary deletion (e.g. Remove Accessory)"
-      }
-    },
-    "ContextBanner": {
-      "props": {
-        "tone": "destructive | warning | info | success | neutral",
-        "density": "comfortable | compact",
-        "descriptionClamp": "number | none"
-      }
-    },
-    "ChoiceCard": {
-      "props": {
-        "tone": "indigo | destructive | neutral",
-        "selectionStyle": "border | glow | fill",
-        "density": "comfortable | compact"
-      }
+      "body_variants": [
+        "body-only",
+        "title-body",
+        "label-body",
+        "sectioned",
+        "list",
+        "banner-list",
+        "form",
+        "confirmation",
+        "search-list",
+        "hero-banner"
+      ],
+      "PopupHero": "Slot for onboarding/announcements"
     }
   },
-  "patterns": {
-    "delete_rule": {
-      "composition": "PopupRoot + PopupBody(confirmation) + ChoiceCardGroup",
-      "governance": "Primary CTA must be destructive tone. Header should include status ActionChip."
-    }
-  }
+  "anti_drift_rules": [
+    "No arbitrary padding: use regionPaddingPreset",
+    "No custom shell: use PopupRoot",
+    "No manual divider lines: use showXDivider props",
+    "Footer trays must use showFooterTray for parity background logic"
+  ]
 }

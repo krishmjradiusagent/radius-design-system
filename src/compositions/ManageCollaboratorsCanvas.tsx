@@ -1,78 +1,94 @@
 import React from 'react';
-import { ModalTemplate } from '../templates/ModalTemplate';
+import { Search, Plus, Mail, Users, ArrowRight, Settings, Info } from 'lucide-react';
+import { PopupRoot } from '../components/PopupRoot';
+import { PopupBody, PopupSection } from '../components/PopupLayout';
+import { CTAGroup } from '../components/CTAGroup';
+import { ActionChip } from '../components/ActionChip';
 import { CollaboratorCard } from '../components/CollaboratorCard';
-import { Typo } from '../components/Typography';
-import { Search, X } from 'lucide-react';
-
-/**
- * 🏛️ CANVAS: Manage Collaborators
- * This is the CANONICAL COMPOSITION for the Manage Collaborators workflow.
- * AI assistants: Use this as the 1:1 reference for assembly.
- */
-
-const MOCK_COLLABORATORS = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    role: 'TITLE COORDINATOR',
-    accessLevel: 'All Client Transactions',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop',
-    isFullAccess: true,
-  },
-  {
-    id: '2',
-    name: 'Robert Martinez',
-    role: 'LENDER',
-    accessLevel: 'All Client Transactions',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop',
-    isFullAccess: true,
-  }
-];
 
 export const ManageCollaboratorsCanvas: React.FC = () => {
   return (
-    <ModalTemplate
-      title="Manage"
-      badgeCount={2}
-      subtitle="Managing collaborators for"
-      subtitleHighlight="123 Elm St, Austin, 2nd street"
-      headerActions={
-        <button className="px-4 py-1.5 border border-slate-200 rounded-lg text-[11px] font-bold tracking-widest text-[#FF4D4D] hover:bg-red-50 transition-colors uppercase">
-          Revoke All
-        </button>
-      }
-      footerNote="Client-level access syncs across all transaction contexts automatically."
-      footerAction={
-        <button className="px-8 py-2.5 bg-[#171717] text-white rounded-xl text-[13px] font-bold hover:bg-black/90 transition-all shadow-md active:scale-95">
-          Done
-        </button>
-      }
-    >
-      <div className="space-y-6">
-        {/* Search Header */}
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-            <Search className="w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
-          </div>
-          <input 
-            type="text"
-            placeholder="Search team members to add..."
-            className="w-full h-12 pl-11 pr-4 bg-white border border-slate-200 rounded-2xl text-[14px] focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all placeholder:text-slate-400"
+    <div className="p-12 bg-slate-100 min-h-screen flex items-center justify-center">
+      <PopupRoot
+        title="Manage Collaborators"
+        subtitle="You have 4 active agents assigned to this client rule."
+        widthPreset="lg"
+        headerAccessory={
+          <ActionChip 
+            variant="icon-text" 
+            label="Internal Network" 
+            leadingIcon={<Users size={12} />} 
+            size="sm" 
+            appearance="subtle"
           />
-        </div>
-
-        {/* Collaborator List */}
-        <div className="space-y-4">
-          {MOCK_COLLABORATORS.map((collab) => (
-            <CollaboratorCard
-              key={collab.id}
-              {...collab}
-              onRemove={() => console.log('Remove')}
-              onContextClick={() => console.log('Context')}
+        }
+        footerAction={<CTAGroup primaryLabel="Invite New" secondaryLabel="Cancel" />}
+        footerNote="Changes are applied instantly across the team."
+        showFooterTray
+        headerSurface="elevated"
+        showHeaderDivider
+      >
+        <PopupBody layout="search-list" gap={24} className="pt-6">
+          {/* Search Row */}
+          <div className="w-full flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-[24px] focus-within:bg-white focus-within:border-[#5A5FF2] focus-within:shadow-sm transition-all">
+            <Search size={18} className="text-slate-400" />
+            <input 
+              placeholder="Search by name or email..." 
+              className="bg-transparent border-none outline-none text-[14px] font-medium w-full placeholder:text-slate-400" 
             />
-          ))}
-        </div>
-      </div>
-    </ModalTemplate>
+          </div>
+
+          <PopupSection 
+            title="Active Agents"
+            accessory={<span className="text-[10px] font-bold text-[#5A5FF2] cursor-pointer hover:underline">View All</span>}
+            body={
+              <div className="flex flex-col gap-2">
+                <CollaboratorCard 
+                  name="Marcus Finn" 
+                  email="marcus@radius.com" 
+                  role="Agent" 
+                  status="Active" 
+                  showActions 
+                />
+                <CollaboratorCard 
+                  name="Sarah Chen" 
+                  email="sarah@radius.com" 
+                  role="Manager" 
+                  status="Active" 
+                  showActions 
+                />
+                <CollaboratorCard 
+                  name="Alex Rivera" 
+                  email="alex@radius.com" 
+                  role="Agent" 
+                  status="Away" 
+                  showActions 
+                />
+              </div>
+            }
+          />
+
+          <PopupSection 
+            title="Pending Invites"
+            body={
+              <div className="flex flex-col gap-2 opacity-60">
+                <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-[20px]">
+                  <div className="flex items-center gap-3">
+                    <div className="size-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
+                      <Mail size={14} />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[14px] font-bold text-slate-900">elena@company.com</span>
+                      <span className="text-[12px] text-slate-400 font-medium">Invited 2h ago</span>
+                    </div>
+                  </div>
+                  <ActionChip variant="text-only" label="Resend" size="sm" />
+                </div>
+              </div>
+            }
+          />
+        </PopupBody>
+      </PopupRoot>
+    </div>
   );
 };
