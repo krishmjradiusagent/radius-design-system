@@ -76,6 +76,7 @@
         "variants": ["icon-only", "icon-text", "text-icon", "icon-text-icon", "text-only"],
         "tones": ["destructive", "warning", "neutral", "info", "success"],
         "appearances": ["outline", "subtle", "filled"],
+        "intents": ["loud", "quiet"],
         "rounding": "full"
       },
       "ContextBanner": {

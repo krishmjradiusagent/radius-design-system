@@ -13,6 +13,7 @@ export * from './templates/ModalTemplate';
 // Compositions (Canonical blueprints)
 export * from './compositions/ManageCollaboratorsCanvas';
 export * from './compositions/DestructiveConfirmationCanvas';
+export * from './compositions/ActionChipShowcase';
 
 // Schema & Tokens
 export * from './tokens/tokens.json';
