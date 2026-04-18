@@ -11,7 +11,8 @@ export type BodyLayout =
   | 'form' 
   | 'confirmation'
   | 'search-list'
-  | 'hero-banner';
+  | 'hero-banner'
+  | 'canonical-manage';
 
 interface PopupBodyProps {
   layout?: BodyLayout;
@@ -25,7 +26,6 @@ interface PopupBodyProps {
 /**
  * 🏛️ Radius Primitive: PopupBody
  * The internal layout engine for popup content area.
- * Behaves like a Figma auto-layout container.
  */
 export const PopupBody: React.FC<PopupBodyProps> = ({
   layout = 'body-only',
@@ -37,14 +37,17 @@ export const PopupBody: React.FC<PopupBodyProps> = ({
 }) => {
   const alignClass = align === 'center' ? 'items-center text-center' : 'items-start';
   
+  // Custom gap logic for specific layouts
+  const finalGap = layout === 'canonical-manage' ? 24 : gap;
+
   return (
     <div 
       className={cn(
-        "flex-1 flex flex-col w-full min-h-0", // min-h-0 for scrollable children
+        "flex-1 flex flex-col w-full min-h-0",
         alignClass,
         className
       )}
-      style={{ gap: `${gap}px`, maxWidth: contentMaxWidth }}
+      style={{ gap: `${finalGap}px`, maxWidth: contentMaxWidth }}
     >
       {children}
     </div>
@@ -57,14 +60,10 @@ interface PopupSectionProps {
   supportingText?: string;
   accessory?: React.ReactNode;
   showDivider?: boolean;
-  density?: 'compact' | 'comfortable';
+  density?: 'compact' | 'comfortable' | 'canonical';
   className?: string;
 }
 
-/**
- * 🏛️ Radius Primitive: PopupSection
- * A logical grouping within a popup body.
- */
 export const PopupSection: React.FC<PopupSectionProps> = ({
   title,
   body,
@@ -74,11 +73,15 @@ export const PopupSection: React.FC<PopupSectionProps> = ({
   density = 'comfortable',
   className,
 }) => {
-  const gap = density === 'compact' ? 'gap-2' : 'gap-4';
+  const gapMap = {
+    compact: 'gap-2',
+    comfortable: 'gap-4',
+    canonical: 'gap-3',
+  };
 
   return (
     <div className={cn("w-full flex flex-col", className)}>
-      <div className={cn("flex flex-col", gap)}>
+      <div className={cn("flex flex-col", gapMap[density])}>
         {(title || accessory) && (
           <div className="flex items-center justify-between gap-4 px-1">
             {title && (
@@ -103,6 +106,19 @@ export const PopupSection: React.FC<PopupSectionProps> = ({
   );
 };
 
+export const PopupSearchRow: React.FC<{ icon: React.ReactNode, placeholder: string, className?: string }> = ({ icon, placeholder, className }) => (
+  <div className={cn(
+    "w-full flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-[24px] focus-within:bg-white focus-within:border-[#5A5FF2] focus-within:shadow-sm transition-all",
+    className
+  )}>
+    <div className="text-slate-400 shrink-0">{icon}</div>
+    <input 
+      placeholder={placeholder} 
+      className="bg-transparent border-none outline-none text-[14px] font-medium w-full placeholder:text-slate-400" 
+    />
+  </div>
+);
+
 interface PopupHeroProps {
   image?: React.ReactNode;
   title: string;
@@ -110,10 +126,6 @@ interface PopupHeroProps {
   className?: string;
 }
 
-/**
- * 🏛️ Radius Primitive: PopupHero
- * High-impact hero section for onboarding or announcement popups.
- */
 export const PopupHero: React.FC<PopupHeroProps> = ({
   image,
   title,

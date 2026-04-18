@@ -1,48 +1,49 @@
 import React from 'react';
-import { Search, Plus, Mail, Users, ArrowRight, Settings, Info } from 'lucide-react';
+import { Search, Info } from 'lucide-react';
 import { PopupRoot } from '../components/PopupRoot';
-import { PopupBody, PopupSection } from '../components/PopupLayout';
+import { PopupBody, PopupSection, PopupSearchRow } from '../components/PopupLayout';
 import { CTAGroup } from '../components/CTAGroup';
 import { ActionChip } from '../components/ActionChip';
 import { CollaboratorCard } from '../components/CollaboratorCard';
+import { manageCollaboratorsRecipe } from '../PopupRecipes';
 
+/**
+ * 🏛️ Radius Canonical Composition: Manage Collaborators
+ * This composition is visually locked to Radius reference benchmarks.
+ * Do not alter structural regions.
+ */
 export const ManageCollaboratorsCanvas: React.FC = () => {
   return (
-    <div className="p-12 bg-slate-100 min-h-screen flex items-center justify-center">
+    <div className="p-12 bg-slate-100 min-h-screen flex items-center justify-center font-sans">
       <PopupRoot
-        title="Manage Collaborators"
-        subtitle="You have 4 active agents assigned to this client rule."
-        widthPreset="lg"
+        {...manageCollaboratorsRecipe}
+        title="Manage"
+        subtitle="You have assigned 4 agents to this client rule."
         headerAccessory={
-          <ActionChip 
-            variant="icon-text" 
-            label="Internal Network" 
-            leadingIcon={<Users size={12} />} 
-            size="sm" 
-            appearance="subtle"
-          />
+          <div className="px-2.5 py-1 bg-slate-900 text-white text-[10px] font-black rounded-full leading-none">
+            4
+          </div>
         }
-        footerAction={<CTAGroup primaryLabel="Invite New" secondaryLabel="Cancel" />}
-        footerNote="Changes are applied instantly across the team."
-        showFooterTray
-        headerSurface="elevated"
-        showHeaderDivider
+        headerAction={
+          <button className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-600 transition-colors">
+            Revoke All
+          </button>
+        }
+        footerAction={<CTAGroup primaryLabel="Close" showSecondary={false} primaryTone="neutral" />}
+        footerNote="Changes are applied instantly to the rule set."
+        footerNoteTone="neutral"
       >
-        <PopupBody layout="search-list" gap={24} className="pt-6">
-          {/* Search Row */}
-          <div className="w-full flex items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-[24px] focus-within:bg-white focus-within:border-[#5A5FF2] focus-within:shadow-sm transition-all">
-            <Search size={18} className="text-slate-400" />
-            <input 
-              placeholder="Search by name or email..." 
-              className="bg-transparent border-none outline-none text-[14px] font-medium w-full placeholder:text-slate-400" 
-            />
+        <PopupBody layout="canonical-manage" gap={24}>
+          <div className="flex flex-col gap-4">
+             <PopupSearchRow icon={<Search size={18} />} placeholder="Search names or emails..." />
+             <div className="border-b border-slate-50 w-full" />
           </div>
 
           <PopupSection 
-            title="Active Agents"
-            accessory={<span className="text-[10px] font-bold text-[#5A5FF2] cursor-pointer hover:underline">View All</span>}
+            title="Assigned Agents"
+            density="canonical"
             body={
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
                 <CollaboratorCard 
                   name="Marcus Finn" 
                   email="marcus@radius.com" 
@@ -64,26 +65,13 @@ export const ManageCollaboratorsCanvas: React.FC = () => {
                   status="Away" 
                   showActions 
                 />
-              </div>
-            }
-          />
-
-          <PopupSection 
-            title="Pending Invites"
-            body={
-              <div className="flex flex-col gap-2 opacity-60">
-                <div className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-[20px]">
-                  <div className="flex items-center gap-3">
-                    <div className="size-8 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
-                      <Mail size={14} />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[14px] font-bold text-slate-900">elena@company.com</span>
-                      <span className="text-[12px] text-slate-400 font-medium">Invited 2h ago</span>
-                    </div>
-                  </div>
-                  <ActionChip variant="text-only" label="Resend" size="sm" />
-                </div>
+                <CollaboratorCard 
+                  name="Elena Petrova" 
+                  email="elena@radius.com" 
+                  role="Agent" 
+                  status="Active" 
+                  showActions 
+                />
               </div>
             }
           />

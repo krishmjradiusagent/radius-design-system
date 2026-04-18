@@ -10,6 +10,9 @@ export * from './components/CTAGroup';
 export * from './components/PopupRoot';
 export * from './components/PopupLayout';
 
+// Recipes
+export * from './PopupRecipes';
+
 // Templates
 export * from './templates/ModalTemplate';
 
@@ -18,6 +21,7 @@ export * from './compositions/ManageCollaboratorsCanvas';
 export * from './compositions/DestructiveConfirmationCanvas';
 export * from './compositions/ActionChipShowcase';
 export * from './compositions/PopupSystemShowcase';
+export * from './compositions/PopupCanonicalShowcase';
 
 // Schema & Tokens
 export * from './tokens/tokens.json';

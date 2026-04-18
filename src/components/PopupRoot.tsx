@@ -9,16 +9,16 @@ export type PopupHeaderAlign = 'start' | 'center';
 export type CloseIconVariant = 'x' | 'plus' | 'minus' | 'chevron' | 'custom';
 export type CloseButtonStyle = 'ghost' | 'subtle-circle' | 'none';
 export type RegionSurface = 'transparent' | 'subtle' | 'elevated';
-export type RegionPadding = 'compact' | 'default' | 'spacious';
+export type RegionPadding = 'compact' | 'default' | 'spacious' | 'none';
 
-interface PopupRootProps {
+export interface PopupRootProps {
   // 📐 Layout & Dimensions
   widthPreset?: PopupWidth;
   headerAlign?: PopupHeaderAlign;
   maxWidthOverride?: string;
   
   // 🏷️ Header Control
-  title: string;
+  title?: string;
   subtitle?: string;
   subtitleMaxWidth?: string;
   subtitleClamp?: 1 | 2 | 3 | 'none';
@@ -34,7 +34,8 @@ interface PopupRootProps {
   
   // 🧩 Header Accessories
   headerChip?: React.ReactNode; // Slot for ActionChip
-  headerAccessory?: React.ReactNode; // e.g. "Manage" button
+  headerAccessory?: React.ReactNode; // Inline with title (e.g. badge)
+  headerAction?: React.ReactNode; // Right-aligned link/button
   
   // 📦 Body Slot
   children: React.ReactNode;
@@ -87,16 +88,17 @@ const SURFACE_MAP: Record<RegionSurface, string> = {
 };
 
 const PADDING_MAP: Record<RegionPadding, string> = {
-  compact: 'p-6',
-  default: 'p-8',
-  spacious: 'p-10',
+  compact: 'px-6 py-6',
+  default: 'px-8 py-8',
+  spacious: 'px-10 py-10',
+  none: 'p-0',
 };
 
 /**
  * 🏛️ Radius Core: PopupRoot
  * 
  * The single source of truth for the Radius Popup System.
- * Handles shell DNA, surface layers, and region partitioning.
+ * Refined for canonical composition exact parity.
  */
 export const PopupRoot: React.FC<PopupRootProps> = ({
   widthPreset = 'lg',
@@ -118,6 +120,7 @@ export const PopupRoot: React.FC<PopupRootProps> = ({
   
   headerChip,
   headerAccessory,
+  headerAction,
   
   children,
   
@@ -155,63 +158,68 @@ export const PopupRoot: React.FC<PopupRootProps> = ({
       style={maxWidthOverride ? { maxWidth: maxWidthOverride } : undefined}
     >
       {/* 1. Header Region */}
-      <header className={cn(
-        "relative flex flex-col transition-all",
-        SURFACE_MAP[headerSurface],
-        paddingClass,
-        showHeaderDivider && "border-b border-slate-50"
-      )}>
-        <div className="flex justify-between items-start w-full gap-4">
-          <div className={cn(
-            "flex flex-col gap-2.5",
-            headerAlign === 'center' && "items-center text-center w-full ml-8" // Offset close button if centered
-          )}>
-            {headerChip && <div className="mb-0.5">{headerChip}</div>}
-            <div className={cn("flex items-center gap-3", headerAlign === 'center' && "justify-center")}>
-              <h2 className="text-[24px] font-black text-slate-900 tracking-tight leading-[1.1]">
-                {title}
-              </h2>
-              {headerAccessory && <div className="shrink-0">{headerAccessory}</div>}
+      {(title || subtitle || headerChip) && (
+        <header className={cn(
+          "relative flex flex-col transition-all",
+          SURFACE_MAP[headerSurface],
+          paddingClass,
+          showHeaderDivider && "border-b border-slate-50"
+        )}>
+          <div className="flex justify-between items-start w-full gap-4">
+            <div className={cn(
+              "flex flex-col gap-2.5 flex-1",
+              headerAlign === 'center' && "items-center text-center w-full"
+            )}>
+              {headerChip && <div className="mb-0.5">{headerChip}</div>}
+              <div className={cn("flex items-center gap-3 w-full", headerAlign === 'center' && "justify-center")}>
+                <div className="flex items-center gap-3">
+                   <h2 className="text-[24px] font-black text-slate-900 tracking-tight leading-none">
+                     {title}
+                   </h2>
+                   {headerAccessory && <div className="shrink-0">{headerAccessory}</div>}
+                </div>
+                {headerAction && <div className="ml-auto">{headerAction}</div>}
+              </div>
             </div>
+
+            {showClose && closeButtonStyle !== 'none' && (
+              <button 
+                onClick={onClose}
+                className={cn(
+                  "shrink-0 transition-all flex items-center justify-center",
+                  closeButtonStyle === 'ghost' && "p-2 -mr-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full",
+                  closeButtonStyle === 'subtle-circle' && "size-10 rounded-full bg-slate-50 text-slate-500 hover:bg-slate-100 border border-slate-100"
+                )}
+              >
+                {closeIcon === 'custom' ? customCloseIcon : CloseIconComponent && <CloseIconComponent size={20} />}
+              </button>
+            )}
           </div>
 
-          {showClose && closeButtonStyle !== 'none' && (
-            <button 
-              onClick={onClose}
+          {subtitle && (
+            <p 
               className={cn(
-                "shrink-0 transition-all flex items-center justify-center",
-                closeButtonStyle === 'ghost' && "p-2 -mr-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full",
-                closeButtonStyle === 'subtle-circle' && "size-10 rounded-full bg-slate-50 text-slate-500 hover:bg-slate-100 border border-slate-100"
+                "text-[14px] font-medium leading-[1.6] mt-3 tracking-normal",
+                subtitleTone === 'neutral' && "text-slate-500",
+                subtitleTone === 'dark' && "text-slate-700",
+                subtitleTone === 'indigo' && "text-[#5A5FF2]",
+                subtitleClamp !== 'none' && `line-clamp-${subtitleClamp}`,
+                finalSubtitleAlign === 'center' && "mx-auto text-center"
               )}
+              style={{ maxWidth: subtitleMaxWidth }}
             >
-              {closeIcon === 'custom' ? customCloseIcon : CloseIconComponent && <CloseIconComponent size={20} />}
-            </button>
+              {subtitle}
+            </p>
           )}
-        </div>
-
-        {subtitle && (
-          <p 
-            className={cn(
-              "text-[14px] font-medium leading-[1.6] mt-3 tracking-normal",
-              subtitleTone === 'neutral' && "text-slate-500",
-              subtitleTone === 'dark' && "text-slate-700",
-              subtitleTone === 'indigo' && "text-[#5A5FF2]",
-              subtitleClamp !== 'none' && `line-clamp-${subtitleClamp}`,
-              finalSubtitleAlign === 'center' && "mx-auto text-center"
-            )}
-            style={{ maxWidth: subtitleMaxWidth }}
-          >
-            {subtitle}
-          </p>
-        )}
-      </header>
+        </header>
+      )}
 
       {/* 2. Body Region */}
       <main className={cn(
         "flex-1 flex flex-col transition-all",
         SURFACE_MAP[bodySurface],
         paddingClass,
-        "pt-0", // Usually body starts right after header spacing
+        (title || subtitle || headerChip) && "pt-0", 
         showBodyDivider && "border-t border-slate-50"
       )}>
         {children}
@@ -221,14 +229,19 @@ export const PopupRoot: React.FC<PopupRootProps> = ({
       {(footerAction || footerAccessory || footerNote) && (
         <footer className={cn(
           "transition-all",
-          showFooterTray ? "bg-slate-50/80 mt-2" : "mt-4",
+          showFooterTray ? "bg-slate-50/80" : "mt-4",
           SURFACE_MAP[footerSurface],
           paddingClass,
           showFooterDivider && !showFooterTray && "border-t border-slate-50",
           footerTrayInset === 'soft' && "p-4 mx-4 mb-4 rounded-[24px] border border-slate-100 shadow-sm",
           footerTrayInset === 'card-aligned' && "p-6 mx-8 mb-8 rounded-[24px] border border-slate-100 shadow-sm"
         )}>
-          <div className="flex items-center justify-between gap-8">
+          {/* If there's a tray, we might need a top divider specifically for it */}
+          {showFooterTray && (
+             <div className="absolute top-0 left-0 right-0 border-t border-slate-100 opacity-50" />
+          )}
+
+          <div className="flex items-center justify-between gap-8 relative z-10">
             <div className="flex flex-col gap-2 min-w-0">
               {footerNote && (
                 <InfoInlineNotice

@@ -1,7 +1,7 @@
 {
   "system": "Radius Design System",
-  "version": "1.2.0",
-  "philosophy": "Figma-Instance Governance: Enforce visual parity via strict prop-driven primitives. PopupRoot is the sole source of truth for shell DNA, region surfaces, and footer tray behavior.",
+  "version": "1.3.0",
+  "philosophy": "Composition-First Governance: Canonical compositions are the primary source of truth. Primitives must support exact parity without injecting generic chrome or alternate structural DNA.",
   "heritage": {
     "shell_rounding": "32px",
     "button_rounding": "16px",
@@ -14,48 +14,34 @@
       "subtitles": "font-medium text-slate-500 text-[14px] leading-[1.6]"
     }
   },
+  "canonical_recipes": {
+    "manageCollaborators": {
+      "shell": "PopupRoot(lg)",
+      "header": "Title + Count Badge + Right Action Row; No Close Button",
+      "footer": "Full-width subtle gray bar; thin divider; icon-text left; CTA right",
+      "body": "Search Row anchored directly below subtitle; Divider-break; Sectioned card stack"
+    },
+    "destructiveConfirmation": {
+      "shell": "PopupRoot(xl)",
+      "header": "Status chip + Title; Ghost close button",
+      "footer": "Soft inset card tray; no background block",
+      "body": "Danger banner + selection choice cards"
+    }
+  },
   "registered_primitives": {
     "PopupRoot": {
       "path": "src/components/PopupRoot.tsx",
-      "regions": ["Header", "Body", "FooterTray"],
-      "props": {
-        "widthPreset": "sm | md | lg | xl | editorial",
-        "headerSurface": "transparent | subtle | elevated",
-        "footerSurface": "transparent | subtle | elevated",
-        "showFooterTray": "boolean",
-        "footerTrayInset": "none | soft | card-aligned",
-        "showHeaderDivider": "boolean",
-        "showBodyDivider": "boolean",
-        "showFooterDivider": "boolean",
-        "regionPaddingPreset": "compact | default | spacious",
-        "closeButtonStyle": "ghost | subtle-circle | none",
-        "subtitleTone": "neutral | dark | indigo",
-        "subtitleClamp": "number | none",
-        "footerNoteTone": "neutral | destructive | info | success",
-        "footerNoteSingleLineWhenPossible": "boolean"
-      }
+      "slots": ["headerChip", "headerAccessory", "headerAction", "footerAction", "footerAccessory", "children"]
     },
     "PopupLayout": {
       "path": "src/components/PopupLayout.tsx",
-      "body_variants": [
-        "body-only",
-        "title-body",
-        "label-body",
-        "sectioned",
-        "list",
-        "banner-list",
-        "form",
-        "confirmation",
-        "search-list",
-        "hero-banner"
-      ],
-      "PopupHero": "Slot for onboarding/announcements"
+      "variants": ["PopupBody", "PopupSection", "PopupSearchRow", "PopupHero"]
     }
   },
   "anti_drift_rules": [
-    "No arbitrary padding: use regionPaddingPreset",
-    "No custom shell: use PopupRoot",
-    "No manual divider lines: use showXDivider props",
-    "Footer trays must use showFooterTray for parity background logic"
+    "Do not inject 'showClose' in Manage canonical unless specifically requested",
+    "Footer trays for Manage must be 'none' inset with subtle surface",
+    "Header Action (right-side) must be used for Manage's 'Revoke All' logic",
+    "Search rows must be anchored with PopupSearchRow primitive"
   ]
 }
