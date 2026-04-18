@@ -1,46 +1,56 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
 import { cn } from '../utils/cn';
 
-interface InfoInlineNoticeProps {
-  icon?: LucideIcon;
+export interface InfoInlineNoticeProps {
+  icon?: React.ReactNode;
   text: string;
-  tone?: 'neutral' | 'destructive' | 'info' | 'warning';
+  tone?: 'neutral' | 'destructive' | 'info' | 'warning' | 'success';
   maxWidth?: string;
+  clamp?: number;
+  singleLineWhenPossible?: boolean;
   className?: string;
 }
 
 /**
  * 🏛️ Radius Primitive: InfoInlineNotice
- * Strictly aligned footer notice that maintains baseline integrity when wrapping.
+ * Strictly aligned notice for footer metadata.
+ * Controls wrapping behavior and optical baseline alignment.
  */
 export const InfoInlineNotice: React.FC<InfoInlineNoticeProps> = ({
-  icon: Icon,
+  icon,
   text,
   tone = 'neutral',
-  maxWidth,
+  maxWidth = '320px',
+  clamp,
+  singleLineWhenPossible = true,
   className
 }) => {
   const toneColors = {
     neutral: 'text-slate-400',
     destructive: 'text-red-500',
-    info: 'text-blue-500',
+    info: 'text-[#5A5FF2]',
     warning: 'text-amber-600',
+    success: 'text-emerald-600',
   };
 
   return (
     <div 
-      className={cn("flex gap-2 items-start", className)}
+      className={cn(
+        "flex gap-2.5 items-start transition-all",
+        className
+      )}
       style={{ maxWidth }}
     >
-      {Icon && (
-        <div className="shrink-0 pt-[3px]">
-          <Icon size={14} className={toneColors[tone]} />
+      {icon && (
+        <div className={cn("shrink-0 pt-[2.5px]", toneColors[tone])}>
+          {icon}
         </div>
       )}
       <p className={cn(
-        "text-[12px] font-medium leading-[1.4] tracking-tight",
-        toneColors[tone]
+        "text-[12px] font-medium leading-[1.4] tracking-tight antialiased",
+        toneColors[tone],
+        singleLineWhenPossible && "whitespace-nowrap overflow-hidden text-ellipsis",
+        !singleLineWhenPossible && clamp && `line-clamp-${clamp}`
       )}>
         {text}
       </p>

@@ -6,6 +6,9 @@ export * from './components/ActionChip';
 export * from './components/ContextBanner';
 export * from './components/ChoiceCard';
 export * from './components/InfoInlineNotice';
+export * from './components/CTAGroup';
+export * from './components/PopupRoot';
+export * from './components/PopupLayout';
 
 // Templates
 export * from './templates/ModalTemplate';
@@ -14,6 +17,7 @@ export * from './templates/ModalTemplate';
 export * from './compositions/ManageCollaboratorsCanvas';
 export * from './compositions/DestructiveConfirmationCanvas';
 export * from './compositions/ActionChipShowcase';
+export * from './compositions/PopupSystemShowcase';
 
 // Schema & Tokens
 export * from './tokens/tokens.json';

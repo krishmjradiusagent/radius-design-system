@@ -1,203 +1,78 @@
 {
-  "design_tokens": {
-    "colors": {
-      "brand": {
-        "primary": "indigo-600",
-        "action": "neutral-900",
-        "surface": "slate-50",
-        "danger": "red-600",
-        "success": "emerald-500"
-      },
-      "text": {
-        "primary": "neutral-900",
-        "secondary": "neutral-500",
-        "inverted": "white"
-      }
-    },
-    "spacing": {
-      "base": "4px",
-      "xxs": "4px",
-      "xs": "8px",
-      "sm": "12px",
-      "md": "16px",
-      "lg": "24px",
-      "xl": "32px",
-      "xxl": "48px"
-    },
-    "radius": {
-      "modal": "32px",
-      "card": "24px",
-      "button": "16px",
-      "badge": "full"
-    },
+  "system": "Radius Design System",
+  "version": "1.1.0",
+  "philosophy": "Figma-Instance Governance: Enforce visual parity via strict prop-driven primitives. Prevent layout drift by locking shell DNA and controlling flexibility through registered slots and booleans.",
+  "heritage": {
+    "shell_rounding": "32px",
+    "button_rounding": "16px",
+    "motion_curve": [0.32, 0.72, 0, 1],
+    "spacing_base": "8px",
+    "optical_alignment": "center-baseline",
     "typography": {
-      "family": "Inter, sans-serif",
-      "weights": {
-        "regular": "400",
-        "medium": "500",
-        "bold": "700",
-        "black": "900"
-      },
-      "tracking": {
-        "tight": "-0.02em",
-        "normal": "0",
-        "widest": "0.1em"
-      }
-    },
-    "shadows": {
-      "modal": "0 20px 50px rgba(0,0,0,0.2)",
-      "card": "0 1px 3px rgba(0,0,0,0.05)",
-      "button": "0 4px 12px rgba(0,0,0,0.1)"
+      "labels": "font-black uppercase tracking-widest",
+      "body": "font-medium text-slate-500",
+      "titles": "font-bold tracking-tight text-slate-900"
     }
   },
-  "component_specs": {
-    "primitives": {
-      "Button": {
-        "base": "shadcn/button",
-        "variants": ["primary", "secondary", "ghost", "outline", "destructive"],
-        "radius": "radius.button"
-      },
-      "Badge": {
-        "base": "shadcn/badge",
-        "style": "uppercase tracking-widest text-[10px] font-black"
-      },
-      "Input": {
-        "base": "shadcn/input",
-        "rounding": "radius.card"
+  "registered_primitives": {
+    "PopupRoot": {
+      "path": "src/components/PopupRoot.tsx",
+      "slots": ["headerChip", "headerAccessory", "footerAction", "footerAccessory", "children"],
+      "props": {
+        "widthPreset": "sm | md | lg | xl",
+        "headerAlign": "start | center",
+        "showClose": "boolean",
+        "backdrop": "light | dim | strong",
+        "title": "string",
+        "subtitle": "string",
+        "subtitleClamp": "number | none",
+        "footerNote": "string",
+        "footerNoteClamp": "number | none"
       }
     },
-    "composites": {
-      "CollaboratorCard": {
-        "anatomy": ["avatar", "title", "role_badge", "status_indicator", "access_box"],
-        "rounding": "radius.card",
-        "states": ["hover", "tap"]
+    "PopupLayout": {
+      "path": "src/components/PopupLayout.tsx",
+      "variants": ["PopupBody", "PopupSection"],
+      "body_props": {
+        "layout": "list | form | confirmation | banner-list",
+        "gap": "number (px)",
+        "align": "start | center"
       },
-      "ActionChip": {
-        "variants": ["icon-only", "icon-text", "text-icon", "icon-text-icon", "text-only"],
-        "tones": ["destructive", "warning", "neutral", "info", "success"],
-        "appearances": ["outline", "subtle", "filled"],
-        "intents": ["loud", "quiet"],
-        "rounding": "full"
-      },
-      "ContextBanner": {
-        "anatomy": ["eyebrow", "title", "description", "icon"],
-        "rounding": "radius.card"
-      }
-    }
-  },
-  "modal_system": {
-    "shell": {
-      "dimensions": {
-        "max_width": "560px",
-        "min_width": "320px",
-        "padding_outer": "spacing.xl",
-        "padding_inner_sections": "spacing.lg"
-      },
-      "geometry": {
-        "rounding": "radius.modal",
-        "border": "1px solid slate-50",
-        "shadow": "shadows.modal"
-      },
-      "header": {
-        "height": "auto",
-        "title_weight": "typography.weights.black",
-        "title_size": "24px",
-        "badge_offset_x": "spacing.xs"
-      },
-      "footer": {
-        "border_top": "1px solid slate-50",
-        "padding_t": "spacing.md",
-        "cta_alignment": "justify-between",
-        "cta_gap": "spacing.md"
+      "section_props": {
+        "title": "string",
+        "body": "ReactNode",
+        "accessory": "ReactNode"
       }
     },
-    "constraints": {
-      "max_sections": 3,
-      "forbidden_elements": ["raw_divs", "custom_paddings", "inline_styles"],
-      "scroll_behavior": "body_only_internal",
-      "destructive_rules": {
-        "primary_button": "color.brand.danger",
-        "requires_checkbox": true
+    "ActionChip": {
+      "path": "src/components/ActionChip.tsx",
+      "variants": ["icon-only", "text-only", "icon-text", "text-icon", "icon-text-icon"],
+      "tones": ["neutral", "info", "warning", "success", "destructive"],
+      "appearances": ["outline", "subtle", "filled"],
+      "destructive_intent": {
+        "loud": "Strong red semantic signaling (e.g. Purge, Delete All)",
+        "quiet": "Neutral gray tone for safety-critical but non-primary deletion (e.g. Remove Accessory)"
       }
     },
-    "cta_hierarchy": {
-      "primary": { "position": "right", "style": "action_black", "rounding": "radius.button" },
-      "secondary": { "position": "left", "style": "ghost", "icon": "info" },
-      "header_action": { "position": "top_right", "style": "outline_danger" }
+    "ContextBanner": {
+      "props": {
+        "tone": "destructive | warning | info | success | neutral",
+        "density": "comfortable | compact",
+        "descriptionClamp": "number | none"
+      }
     },
-    "mobile_system": {
-      "variant": "bottom_sheet",
-      "trigger_breakpoint": "640px",
-      "geometry": {
-        "rounding": "32px 32px 0 0",
-        "drag_handle": true,
-        "max_height": "90vh"
-      },
-      "adjustments": {
-        "padding_outer": "spacing.md",
-        "spacing_between_sections": "spacing.md",
-        "cta_layout": "stacked_reversed",
-        "cta_width": "full"
-      },
-      "keyboard_handling": {
-        "avoid_keyboard": true,
-        "scroll_into_view": true,
-        "sticky_footer": true
+    "ChoiceCard": {
+      "props": {
+        "tone": "indigo | destructive | neutral",
+        "selectionStyle": "border | glow | fill",
+        "density": "comfortable | compact"
       }
     }
-  },
-  "modal_sections": {
-    "entity_preview": { "structure": "avatar + main_text + sub_text", "purpose": "Subject identification" },
-    "selection_list": { 
-      "structure": "search_row + card_stack", 
-      "constraints": ["search_is_mandatory", "max_items_visible: 3"] 
-    },
-    "permissions": { "structure": "label + dropdown/switcher", "tokens": ["spacing.md"] },
-    "impact_list": { "structure": "info_icon + bullet_points", "roles": ["warning", "info"] },
-    "checkbox_confirmation": { "structure": "checkbox + mandatory_label", "behavior": "locks_primary_cta" },
-    "choice_scope": { "structure": "ChoiceCardGroup + ChoiceCard", "behavior": "selective_impact" }
   },
   "patterns": {
-    "assign": { "interaction": "multi-select", "schema": ["selection_list", "permissions"] },
-    "revoke": { "interaction": "confirm_danger", "schema": ["entity_preview", "impact_list"] },
-    "invite": { "interaction": "form_entry", "schema": ["entity_preview", "permissions"] },
-    "delete": { "interaction": "hard_delete", "schema": ["entity_preview", "impact_list", "checkbox_confirmation"] },
-    "delete_rule": { "interaction": "choice_delete", "schema": ["context_banner", "choice_scope"] }
-  },
-  "examples": {
-    "invite_collaborator": {
-      "pattern": "invite",
-      "sections": [
-        { "type": "entity_preview", "data": { "title": "Invite Team Member", "subtitle": "Send secure onboarding link" } },
-        { "type": "permissions", "data": { "label": "Initial Role", "options": ["Agent", "Team Lead"] } }
-      ],
-      "primary_cta": { "text": "Send Invitation", "style": "action_black" }
-    },
-    "revoke_access": {
-      "pattern": "revoke",
-      "sections": [
-        { "type": "entity_preview", "data": { "title": "Sarah Johnson", "subtitle": "Title Coordinator" } },
-        { "type": "impact_list", "data": ["Removes access to Transaction Context", "Disables audit logging"] }
-      ],
-      "primary_cta": { "text": "Revoke Access", "style": "color.brand.danger" }
-    },
-    "delete_collaborator": {
-      "pattern": "delete",
-      "sections": [
-        { "type": "entity_preview", "data": { "title": "Robert Martinez", "subtitle": "Lender" } },
-        { "type": "impact_list", "data": ["Permanent data loss", "Irreversible action"] },
-        { "type": "checkbox_confirmation", "data": { "label": "I understand this cannot be undone" } }
-      ],
-      "primary_cta": { "text": "Delete Forever", "style": "color.brand.danger" }
-    },
-    "assign_collaborator": {
-      "pattern": "assign",
-      "sections": [
-        { "type": "selection_list", "data": { "placeholder": "Search team members...", "items_limit": 3 } },
-        { "type": "permissions", "data": { "label": "Visibility Scope", "options": ["Current Context", "Global"] } }
-      ],
-      "primary_cta": { "text": "Assign Selected", "style": "action_black" }
+    "delete_rule": {
+      "composition": "PopupRoot + PopupBody(confirmation) + ChoiceCardGroup",
+      "governance": "Primary CTA must be destructive tone. Header should include status ActionChip."
     }
-  },
-  "llm_rules": "STRICT ADHERENCE REQUIRED: 1. Use semantic tokens ONLY. 2. Map every component to a shadcn base. 3. NEVER use hardcoded pixels/hex codes. 4. Accessibility WCAG AA mandatory. 5. If pattern exists, reuse it. Do not invent custom layouts."
+  }
 }
