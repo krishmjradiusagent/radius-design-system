@@ -11,13 +11,19 @@ import { Info } from "lucide-react"
 interface ModalTemplateProps {
   title: string
   badgeCount?: number
-  headerAction?: React.ReactNode // e.g. "Revoke All" button
+  headerAction?: React.ReactNode 
   subtitle?: React.ReactNode
-  footerAction?: React.ReactNode // e.g. "Done" button
+  footerAction?: React.ReactNode 
   footerNote?: string
   children: React.ReactNode
-  maxWidth?: string // Tailwind max-w class
+  widthPreset?: 'default' | 'wide' | 'editorial'
 }
+
+const WIDTH_PRESETS = {
+  default: "max-w-[560px]",
+  wide: "max-w-[640px]",
+  editorial: "max-w-[800px]",
+};
 
 export function ModalTemplate({
   title,
@@ -27,8 +33,9 @@ export function ModalTemplate({
   footerAction,
   footerNote,
   children,
-  maxWidth = "max-w-[560px]"
+  widthPreset = "default"
 }: ModalTemplateProps) {
+  const maxWidth = WIDTH_PRESETS[widthPreset];
   return (
     <div className={`bg-white rounded-[32px] shadow-[0px_20px_50px_rgba(0,0,0,0.2)] overflow-hidden w-full ${maxWidth}`}>
       <div className="p-8">

@@ -71,6 +71,15 @@
         "anatomy": ["avatar", "title", "role_badge", "status_indicator", "access_box"],
         "rounding": "radius.card",
         "states": ["hover", "tap"]
+      },
+      "ActionChip": {
+        "variants": ["icon-only", "icon-text", "text-icon", "icon-text-icon", "text-only"],
+        "tones": ["destructive", "warning", "neutral", "info"],
+        "rounding": "full"
+      },
+      "ContextBanner": {
+        "anatomy": ["eyebrow", "title", "description", "icon"],
+        "rounding": "radius.card"
       }
     }
   },
@@ -136,27 +145,56 @@
     }
   },
   "modal_sections": {
-    "entity_preview": { "structure": "avatar + main_text + sub_text" },
-    "selection_list": { "structure": "search_row + card_stack" },
-    "permissions": { "structure": "label + dropdown/switcher" },
-    "impact_list": { "structure": "info_icon + bullet_points" }
+    "entity_preview": { "structure": "avatar + main_text + sub_text", "purpose": "Subject identification" },
+    "selection_list": { 
+      "structure": "search_row + card_stack", 
+      "constraints": ["search_is_mandatory", "max_items_visible: 3"] 
+    },
+    "permissions": { "structure": "label + dropdown/switcher", "tokens": ["spacing.md"] },
+    "impact_list": { "structure": "info_icon + bullet_points", "roles": ["warning", "info"] },
+    "checkbox_confirmation": { "structure": "checkbox + mandatory_label", "behavior": "locks_primary_cta" },
+    "choice_scope": { "structure": "ChoiceCardGroup + ChoiceCard", "behavior": "selective_impact" }
   },
   "patterns": {
-    "assign": { "interaction": "multi-select + confirm" },
-    "revoke": { "interaction": "danger_button + confirmation_modal" },
-    "invite": { "interaction": "email_input + role_selection" }
+    "assign": { "interaction": "multi-select", "schema": ["selection_list", "permissions"] },
+    "revoke": { "interaction": "confirm_danger", "schema": ["entity_preview", "impact_list"] },
+    "invite": { "interaction": "form_entry", "schema": ["entity_preview", "permissions"] },
+    "delete": { "interaction": "hard_delete", "schema": ["entity_preview", "impact_list", "checkbox_confirmation"] },
+    "delete_rule": { "interaction": "choice_delete", "schema": ["context_banner", "choice_scope"] }
   },
   "examples": {
     "invite_collaborator": {
-      "family": "invitation",
-      "sections": ["form", "info"],
-      "primary_cta": "Send Invitation"
+      "pattern": "invite",
+      "sections": [
+        { "type": "entity_preview", "data": { "title": "Invite Team Member", "subtitle": "Send secure onboarding link" } },
+        { "type": "permissions", "data": { "label": "Initial Role", "options": ["Agent", "Team Lead"] } }
+      ],
+      "primary_cta": { "text": "Send Invitation", "style": "action_black" }
     },
     "revoke_access": {
-      "family": "confirmation",
-      "sections": ["warning"],
-      "primary_cta": "Revoke Access",
-      "is_destructive": true
+      "pattern": "revoke",
+      "sections": [
+        { "type": "entity_preview", "data": { "title": "Sarah Johnson", "subtitle": "Title Coordinator" } },
+        { "type": "impact_list", "data": ["Removes access to Transaction Context", "Disables audit logging"] }
+      ],
+      "primary_cta": { "text": "Revoke Access", "style": "color.brand.danger" }
+    },
+    "delete_collaborator": {
+      "pattern": "delete",
+      "sections": [
+        { "type": "entity_preview", "data": { "title": "Robert Martinez", "subtitle": "Lender" } },
+        { "type": "impact_list", "data": ["Permanent data loss", "Irreversible action"] },
+        { "type": "checkbox_confirmation", "data": { "label": "I understand this cannot be undone" } }
+      ],
+      "primary_cta": { "text": "Delete Forever", "style": "color.brand.danger" }
+    },
+    "assign_collaborator": {
+      "pattern": "assign",
+      "sections": [
+        { "type": "selection_list", "data": { "placeholder": "Search team members...", "items_limit": 3 } },
+        { "type": "permissions", "data": { "label": "Visibility Scope", "options": ["Current Context", "Global"] } }
+      ],
+      "primary_cta": { "text": "Assign Selected", "style": "action_black" }
     }
   },
   "llm_rules": "STRICT ADHERENCE REQUIRED: 1. Use semantic tokens ONLY. 2. Map every component to a shadcn base. 3. NEVER use hardcoded pixels/hex codes. 4. Accessibility WCAG AA mandatory. 5. If pattern exists, reuse it. Do not invent custom layouts."
