@@ -74,7 +74,8 @@
       },
       "ActionChip": {
         "variants": ["icon-only", "icon-text", "text-icon", "icon-text-icon", "text-only"],
-        "tones": ["destructive", "warning", "neutral", "info"],
+        "tones": ["destructive", "warning", "neutral", "info", "success"],
+        "appearances": ["outline", "subtle", "filled"],
         "rounding": "full"
       },
       "ContextBanner": {

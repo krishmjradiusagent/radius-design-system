@@ -1,67 +1,120 @@
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
 import { cn } from '../utils/cn';
 
-type ChipVariant = 'icon-only' | 'icon-text' | 'text-icon' | 'icon-text-icon' | 'text-only';
-type ChipTone = 'destructive' | 'warning' | 'neutral' | 'info';
-type ChipSize = 'sm' | 'md';
+export type ActionChipVariant =
+  | 'icon-only'
+  | 'text-only'
+  | 'icon-text'
+  | 'text-icon'
+  | 'icon-text-icon';
 
-interface ActionChipProps {
-  variant?: ChipVariant;
-  tone?: ChipTone;
+export type ActionChipTone =
+  | 'neutral'
+  | 'info'
+  | 'warning'
+  | 'success'
+  | 'destructive';
+
+export type ActionChipAppearance =
+  | 'outline'
+  | 'subtle'
+  | 'filled';
+
+export type ActionChipSize = 'sm' | 'md';
+
+export interface ActionChipProps {
+  variant: ActionChipVariant;
+  tone?: ActionChipTone;
+  appearance?: ActionChipAppearance;
+  size?: ActionChipSize;
   label?: string;
-  leadingIcon?: LucideIcon;
-  trailingIcon?: LucideIcon;
-  size?: ChipSize;
-  styleType?: 'outlined' | 'filled' | 'subtle';
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
   className?: string;
 }
 
 /**
  * 🏛️ Radius Primitive: ActionChip
- * Enforces strict optical baseline alignment and fixed height tokens.
+ * 
+ * A high-fidelity, prop-driven chip component that enforces Radius "Heritage" styling.
+ * Optimized for optical alignment, strict token usage, and premium visual density.
  */
 export const ActionChip: React.FC<ActionChipProps> = ({
-  variant = 'text-only',
+  variant,
   tone = 'neutral',
-  label,
-  leadingIcon: Leading,
-  trailingIcon: Trailing,
+  appearance = 'subtle',
   size = 'md',
-  styleType = 'subtle',
-  className
+  label,
+  leadingIcon,
+  trailingIcon,
+  className,
 }) => {
-  const toneClasses = {
-    destructive: styleType === 'subtle' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-red-600 text-white border-red-600',
-    warning: styleType === 'subtle' ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-amber-500 text-white border-amber-500',
-    info: styleType === 'subtle' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-blue-600 text-white border-blue-600',
-    neutral: styleType === 'subtle' ? 'bg-slate-50 text-slate-600 border-slate-100' : 'bg-slate-900 text-white border-slate-900',
+  // 🎨 Tone & Appearance Matrix
+  const toneStyles: Record<ActionChipTone, Record<ActionChipAppearance, string>> = {
+    neutral: {
+      subtle: 'bg-slate-50 text-slate-600 border-slate-100',
+      outline: 'bg-transparent text-slate-600 border-slate-200',
+      filled: 'bg-slate-900 text-white border-slate-900',
+    },
+    info: {
+      subtle: 'bg-blue-50 text-blue-600 border-blue-100',
+      outline: 'bg-transparent text-blue-600 border-blue-200',
+      filled: 'bg-blue-600 text-white border-blue-600',
+    },
+    warning: {
+      subtle: 'bg-amber-50 text-amber-700 border-amber-100',
+      outline: 'bg-transparent text-amber-700 border-amber-200',
+      filled: 'bg-amber-500 text-white border-amber-500',
+    },
+    success: {
+      subtle: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+      outline: 'bg-transparent text-emerald-700 border-emerald-200',
+      filled: 'bg-emerald-600 text-white border-emerald-600',
+    },
+    destructive: {
+      subtle: 'bg-red-50 text-red-600 border-red-100',
+      outline: 'bg-transparent text-red-600 border-red-200',
+      filled: 'bg-red-600 text-white border-red-600',
+    },
   };
 
-  const sizeClasses = {
-    sm: 'h-6 px-2 text-[10px]',
-    md: 'h-8 px-3 text-[11px]',
+  // 📐 Size Tokens
+  const sizeStyles = {
+    sm: 'h-6 px-2 text-[10px] gap-1',
+    md: 'h-8 px-3 text-[11px] gap-1.5',
   };
 
-  const iconSize = size === 'sm' ? 12 : 14;
+  // 🧩 Layout Logic
+  const showLeading = (variant.includes('icon-') || variant === 'icon-only') && leadingIcon;
+  const showTrailing = (variant.endsWith('-icon') || variant === 'icon-only') && trailingIcon;
+  const showText = variant !== 'icon-only' && label;
 
   return (
-    <div className={cn(
-      "inline-flex items-center justify-center gap-1.5 rounded-full border font-black uppercase tracking-widest transition-all",
-      toneClasses[tone],
-      sizeClasses[size],
-      className
-    )}>
-      {Leading && (variant.includes('icon-') || variant === 'icon-only') && (
-        <Leading size={iconSize} className="shrink-0" />
+    <div
+      className={cn(
+        'inline-flex items-center justify-center rounded-full border transition-all select-none',
+        'font-black uppercase tracking-widest', // Radius Header DNA
+        toneStyles[tone][appearance],
+        sizeStyles[size],
+        className
       )}
-      
-      {label && variant !== 'icon-only' && (
-        <span className="leading-none mt-[1px]">{label}</span>
+    >
+      {showLeading && (
+        <span className="flex items-center justify-center shrink-0">
+          {leadingIcon}
+        </span>
       )}
 
-      {Trailing && (variant.endsWith('-icon') || variant === 'icon-only') && (
-        <Trailing size={iconSize} className="shrink-0" />
+      {showText && (
+        <span className="leading-none mt-[1px] whitespace-nowrap">
+          {label}
+        </span>
+      )}
+
+      {showTrailing && (
+        <span className="flex items-center justify-center shrink-0">
+          {trailingIcon}
+        </span>
       )}
     </div>
   );

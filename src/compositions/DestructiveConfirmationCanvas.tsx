@@ -46,8 +46,8 @@ export const DestructiveConfirmationCanvas: React.FC = () => {
             variant="icon-text" 
             tone="destructive" 
             label="Destructive" 
-            leadingIcon={ShieldAlert}
-            styleType="subtle"
+            leadingIcon={<ShieldAlert size={14} />}
+            appearance="subtle"
             size="md"
           />
         }
